@@ -7,6 +7,7 @@ For keyword argument help, see:
 http://corpus.rae.es/ayuda_c.htm
 """
 
+from itertools import zip_longest
 from selenium import webdriver
 from urllib.request import quote
 import pandas as pd
@@ -14,11 +15,12 @@ import matplotlib.pyplot as plt
 
 # Parameters
 queries = ["vos", "tú", "usted"]
-start_year = 1000
+start_year = 900
 stop_year = 2000
-step = 50 # Gaps n years to search through.
+step = 25 # Gaps n years to search through.
 not_spain = "0&pais=1&pais=2&pais=3&pais=4&pais=5&pais=6&pais=7&pais=8&pais=10&pais=11&pais=12&pais=13&pais=14&pais=15&pais=16&pais=17&pais=18&pais=19&pais=20&pais=21&pais=22&pais=23"
-countries = [1000,1000,1000] # 1000=all countries, 9=Spain
+all_countries = 1000 # 1000=all countries, 9=Spain
+countries = [all_countries]
 
 # Allow plotting of multiple lines on same axis
 fig, ax = plt.subplots()
@@ -27,7 +29,7 @@ fig, ax = plt.subplots()
 dfs = []
 
 # Location of driver for webdriver. Not needed as param if location in your PATH
-geckodriverpath = "C:\\Users\\user\\geckodriver-v0.21.0-win64\\geckodriver.exe"
+geckodriverpath = "C:\\Users\\jacob\\Downloads\\geckodriver-v0.21.0-win64\\geckodriver.exe"
 driver = webdriver.Firefox(executable_path=geckodriverpath)
 
 # xpaths for relevant elements on webpages
@@ -36,7 +38,10 @@ xpath_table = "/html/body/blockquote/table[2]/tbody/tr/td/table/tbody/tr"
 
 url_base = "http://corpus.rae.es/cgi-bin/crpsrvEx.dll?MfcISAPICommand=buscar&tradQuery=1&destino=1"
 
-for query, country in zip(queries, countries):
+# Zipping queries and country parameter for search
+q_c = list(zip_longest(queries, countries, fillvalue=countries[-1]))
+
+for query, country in q_c:
     a = {query: {}}
     
     for year in range(start_year,stop_year,step):
