@@ -1,9 +1,9 @@
+# -*- coding: utf-8 -*-
 """
-Refactored script for comparing frequency of terms in the RAE's CORDE.
+Script for comparing frequency of terms in the RAE's CORDE with command-line arguments.
 Produces graphs similar to Google Ngram Viewer.
 """
-
-from itertools import zip_longest
+import argparse
 from urllib.parse import quote
 
 import matplotlib.pyplot as plt
@@ -16,11 +16,6 @@ GECKODRIVER_PATH = "C:\\path\\to\\your\\geckodriver.exe"
 BASE_URL = "http://corpus.rae.es/cgi-bin/crpsrvEx.dll?MfcISAPICommand=buscar&tradQuery=1&destino=1"
 XPATH_SUBMIT = "/html/body/blockquote/table[2]/tbody/tr[5]/td/form/input[5]"
 XPATH_TABLE = "/html/body/blockquote/table[2]/tbody/tr/td/table/tbody/tr"
-QUERIES = ["vos", "tú", "usted"]
-COUNTRIES = [1000]  # 1000 for all countries
-START_YEAR = 900
-STOP_YEAR = 2000
-STEP = 25
 
 
 def fetch_data(query, country, start_year, stop_year, step):
@@ -52,10 +47,11 @@ def plot_data(data_frames):
     plt.show()
 
 
-def main():
+def main(queries, start_year, stop_year, step):
+    country = 1000  # Assuming constant country code for all queries
     data_frames = []
-    for query, country in zip_longest(QUERIES, COUNTRIES, fillvalue=COUNTRIES[-1]):
-        data = fetch_data(query, country, START_YEAR, STOP_YEAR, STEP)
+    for query in queries:
+        data = fetch_data(query, country, start_year, stop_year, step)
         df = pd.DataFrame(list(data.items()), columns=["Year", "Occurrences"])
         df["Query"] = query
         data_frames.append(df)
@@ -63,4 +59,27 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+        description="Perform frequency analysis of terms in RAE's CORDE."
+    )
+    parser.add_argument(
+        "queries", nargs="+", help="Space-separated list of words to search"
+    )
+    parser.add_argument(
+        "--start_year",
+        type=int,
+        default=900,
+        help="Start year of the range (default: 900)",
+    )
+    parser.add_argument(
+        "--stop_year",
+        type=int,
+        default=2000,
+        help="Stop year of the range (default: 2000)",
+    )
+    parser.add_argument(
+        "--step", type=int, default=25, help="Step size for years (default: 25)"
+    )
+    args = parser.parse_args()
+
+    main(args.queries, args.start_year, args.stop_year, args.step)

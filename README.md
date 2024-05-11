@@ -2,12 +2,6 @@
 
 This project includes a Python script that performs frequency analysis of terms over time in the Real Academia Española's CORDE (Corpus Diacrónico del Español). The output resembles the Google Ngram Viewer, providing insights into the usage of specific terms across different periods.
 
-## Project Structure
-
-- `corde_freq_analysis.py`: The main Python script for fetching data and generating plots.
-- `environment.yml`: Contains the specifications for the Conda environment required to run the script.
-- `README.md`: This file, providing documentation for the project.
-
 ## Getting Started
 
 ### Prerequisites
@@ -30,17 +24,29 @@ This project includes a Python script that performs frequency analysis of terms 
 
 ### Running the Script
 
-With the environment activated, run the script using:
+With the environment activated, run the script by specifying the terms you want to analyze and optionally setting the start year, stop year, and step size. Use the following syntax:
 
 ```bash
-python corde_freq_analysis.py
+python corde_freq_analysis.py [terms] --start_year [start] --stop_year [stop] --step [step]
 ```
-This will execute the term frequency analysis and display the resulting plots. The script fetches data from the CORDE, processes it, and plots the frequency of terms over the specified time range.
 
-### Custromisation
+#### Parameters:
 
-You can customize the terms, time range, and other parameters by modifying the following variables in the `corde_freq_analysis.py`:
+- `[terms]`: Space-separated list of words you want to search in the CORDE database. For example, "vos tú usted".
+- `[start]`: (Optional) Start year of the time range for the search. Default is 900.
+- `[stop]`: (Optional) Stop year of the time range for the search. Default is 2000.
+- `[step]`: (Optional) Interval in years between searches. Default is 25.
 
-- `QUERIES`: List of terms to analyze.
-- `START_YEAR`, `STOP_YEAR`: The range of years to cover in the analysis.
-- `STEP`: Interval of years for querying the corpus.
+#### Example Usage:
+
+To analyze the terms "vos", "tú", and "usted" from the year 1600 to 2000 with a 50-year interval, run:
+
+```bash
+python corde_freq_analysis.py vos tú usted --start_year 1600 --stop_year 2000 --step 50
+```
+
+This command will fetch the usage frequency of the specified terms over the defined period and generate a plot to visualize the trends.
+
+> [!NOTE]
+>
+> Ensure you have the required Selenium WebDriver installed and correctly configured to match the browser version on your system. This script is configured to use Firefox and its corresponding GeckoDriver.
