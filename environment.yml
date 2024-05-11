@@ -1,0 +1,12 @@
+name: corde-analysis
+channels:
+  - defaults
+dependencies:
+  - python=3.8  # Specify your preferred Python version
+  - selenium
+  - pandas
+  - matplotlib
+  - firefox  # Assumes you are using geckodriver which requires Firefox
+  - pip
+  - pip:
+    - urllib3  # In case it's needed explicitly
